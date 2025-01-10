@@ -26,7 +26,8 @@ type HardhatTrace = {
 describe("SafeToL2Setup", () => {
     const setupTests = deployments.createFixture(async ({ deployments }) => {
         await deployments.fixture();
-        const safeToL2SetupLib = await (await hre.ethers.getContractFactory("SafeToL2Setup")).deploy();
+        const safeToL2SetupAddress = (await deployments.get("SafeToL2Setup")).address;
+        const safeToL2SetupLib = await hre.ethers.getContractAt("SafeToL2Setup", safeToL2SetupAddress);
         const signers = await hre.ethers.getSigners();
         const safeSingleton = await getSafeSingleton();
         const safeL2 = await getSafeL2Singleton();
