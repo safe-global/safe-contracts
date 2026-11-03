@@ -49,7 +49,12 @@ if (PK) {
         mnemonic: MNEMONIC ?? DEFAULT_MNEMONIC,
     };
 }
-const soliditySettings = SOLIDITY_SETTINGS ? JSON.parse(SOLIDITY_SETTINGS) : undefined;
+// Do not append the metadata hash to the bytecode: it is never executed and costs 200 gas per byte to deploy.
+const noMetadataHashSettings = { metadata: { bytecodeHash: "none" as const } };
+
+const soliditySettings = SOLIDITY_SETTINGS
+    ? { ...noMetadataHashSettings, ...JSON.parse(SOLIDITY_SETTINGS) }
+    : noMetadataHashSettings;
 
 const deterministicDeployment = (network: string): DeterministicDeploymentInfo => {
     const info = getSingletonFactoryInfo(parseInt(network));
@@ -80,7 +85,7 @@ const userConfig: HardhatUserConfig = {
     solidity: {
         compilers: [
             { version: SOLIDITY_VERSION ?? DEFAULT_SOLIDITY_VERSION, settings: soliditySettings },
-            { version: DEFAULT_SOLIDITY_VERSION },
+            { version: DEFAULT_SOLIDITY_VERSION, settings: noMetadataHashSettings },
         ],
     },
     networks: {
