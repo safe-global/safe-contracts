@@ -1,0 +1,6 @@
+[profile.default]
+solc = "0.7.6"
+optimizer = true
+optimizer_runs = 200
+src = "test/halmos/test"
+test = "test/halmos/test"
